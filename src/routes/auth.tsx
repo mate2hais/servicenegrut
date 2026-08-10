@@ -40,12 +40,13 @@ function AuthPage() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success("Bine ai revenit!");
+        navigate({ to: "/app/map" });
       } else {
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        toast.success("Cont creat! Verifică emailul pentru confirmare.");
+        toast.success("Cont creat! Verifică emailul pentru confirmare, apoi intră în cont.");
+        setIsLogin(true);
       }
-      navigate({ to: "/app/map" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "A apărut o eroare");
     } finally {

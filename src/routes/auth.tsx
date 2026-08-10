@@ -156,7 +156,7 @@ function AuthPage() {
             Continuă cu Google
           </Button>
 
-          <p className="mt-6 text-center text-sm text-muted-foreground">
+          <div className="mt-6 text-center text-sm text-muted-foreground">
             {isLogin ? "Nu ai cont?" : "Ai deja cont?"}{" "}
             <button
               type="button"
@@ -165,7 +165,7 @@ function AuthPage() {
             >
               {isLogin ? "Înregistrează-te" : "Autentifică-te"}
             </button>
-          </p>
+          </div>
         </div>
       </div>
     </div>

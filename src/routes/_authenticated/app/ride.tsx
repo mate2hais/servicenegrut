@@ -5,8 +5,29 @@ import { useServerFn } from "@tanstack/react-start";
 import { getActiveRide, updateRidePosition, endRide } from "@/lib/rides.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Battery, MapPin, Navigation, Square, Flag, Clock, Route as RouteIcon, CreditCard, ArrowLeft } from "lucide-react";
+import {
+  Battery,
+  MapPin,
+  Navigation,
+  Square,
+  Flag,
+  Clock,
+  Route as RouteIcon,
+  CreditCard,
+  ArrowLeft,
+  ShieldCheck,
+  Bike,
+} from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/app/ride")({
   head: () => ({
@@ -38,7 +59,12 @@ function RidePage() {
   const [destination, setDestination] = useState("");
   const [showDestination, setShowDestination] = useState(false);
   const [destinationCost, setDestinationCost] = useState<number | null>(null);
-  const [ending, setEnding] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [paying, setPaying] = useState(false);
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardName, setCardName] = useState("");
+  const [cardExpiry, setCardExpiry] = useState("");
+  const [cardCvc, setCardCvc] = useState("");
   const watchRef = useRef<number | null>(null);
   const startedAtRef = useRef<Date | null>(null);
   const lastPosRef = useRef<{ lat: number; lng: number } | null>(null);
@@ -101,10 +127,17 @@ function RidePage() {
     };
   }, [distance, ride, updatePosition]);
 
-  const handleEndRide = async () => {
+  const openPayment = () => setShowPayment(true);
+
+  const handlePayAndEnd = async () => {
     if (!ride || !position) return;
-    setEnding(true);
+    if (cardNumber.length < 16 || cardCvc.length < 3 || cardExpiry.length < 5) {
+      toast.error("Completează corect datele cardului.");
+      return;
+    }
+    setPaying(true);
     try {
+      await new Promise((resolve) => setTimeout(resolve, 1200));
       const completed = await endRideFn({
         data: {
           ride_id: ride.id,
@@ -114,12 +147,13 @@ function RidePage() {
         },
       });
       queryClient.invalidateQueries({ queryKey: ["active-ride"] });
-      toast.success(`Cursă încheiată. Cost total: ${completed.cost_lei} lei`);
+      toast.success(`Plată de ${completed.cost_lei} lei procesată cu succes!`);
       navigate({ to: "/app/history" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Eroare la încheierea cursei");
     } finally {
-      setEnding(false);
+      setPaying(false);
+      setShowPayment(false);
     }
   };
 
@@ -172,7 +206,7 @@ function RidePage() {
 
         <div className="rounded-3xl border border-border bg-card p-6 text-center shadow-lg">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <Navigation className="h-8 w-8" />
+            <Bike className="h-8 w-8" />
           </div>
           <h1 className="mt-4 text-2xl font-bold">Cursa ta este activă</h1>
           <p className="text-sm text-muted-foreground">Bicicleta {bikeCode}</p>
@@ -217,11 +251,11 @@ function RidePage() {
           variant="destructive"
           size="lg"
           className="w-full"
-          onClick={handleEndRide}
-          disabled={ending || !position}
+          onClick={openPayment}
+          disabled={!position}
         >
           <Square className="mr-2 h-5 w-5" />
-          {ending ? "Se încheie cursa..." : "Încheie cursa și plătește"}
+          Încheie cursa și plătește
         </Button>
 
         {!position && (
@@ -230,6 +264,95 @@ function RidePage() {
           </p>
         )}
       </div>
+
+      <Dialog open={showPayment} onOpenChange={setShowPayment}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5 text-primary" />
+              Plătește cursa
+            </DialogTitle>
+            <DialogDescription>
+              Simulează plata cu cardul. Nu se procesează tranzacții reale.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div className="rounded-2xl bg-primary/5 p-4 text-center">
+              <p className="text-sm text-muted-foreground">Total de plată</p>
+              <p className="text-3xl font-bold text-primary">{cost.toFixed(2)} lei</p>
+              <p className="text-xs text-muted-foreground">{distance.toFixed(2)} km × 1 leu/km</p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="cardNumber">Număr card</Label>
+              <Input
+                id="cardNumber"
+                placeholder="4242 4242 4242 4242"
+                value={cardNumber}
+                onChange={(e) => setCardNumber(e.target.value.replace(/\D/g, "").slice(0, 16))}
+                maxLength={16}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="cardName">Titular card</Label>
+              <Input
+                id="cardName"
+                placeholder="Ion Popescu"
+                value={cardName}
+                onChange={(e) => setCardName(e.target.value)}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="cardExpiry">Data expirării</Label>
+                <Input
+                  id="cardExpiry"
+                  placeholder="MM/YY"
+                  value={cardExpiry}
+                  onChange={(e) => {
+                    let v = e.target.value.replace(/\D/g, "");
+                    if (v.length >= 2) v = v.slice(0, 2) + "/" + v.slice(2, 4);
+                    setCardExpiry(v);
+                  }}
+                  maxLength={5}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="cardCvc">CVC</Label>
+                <Input
+                  id="cardCvc"
+                  placeholder="123"
+                  value={cardCvc}
+                  onChange={(e) => setCardCvc(e.target.value.replace(/\D/g, "").slice(0, 3))}
+                  maxLength={3}
+                />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowPayment(false)} disabled={paying}>
+              Anulează
+            </Button>
+            <Button onClick={handlePayAndEnd} disabled={paying}>
+              {paying ? (
+                <>
+                  <ShieldCheck className="mr-2 h-4 w-4 animate-pulse" />
+                  Se procesează...
+                </>
+              ) : (
+                <>
+                  <ShieldCheck className="mr-2 h-4 w-4" />
+                  Plătește acum
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

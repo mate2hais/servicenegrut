@@ -6,7 +6,7 @@ import { listBikes } from "@/lib/bikes.functions";
 import { getActiveRide, startRide } from "@/lib/rides.functions";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Battery, Bike, Locate, Navigation, Zap } from "lucide-react";
+import { Battery, Locate, Navigation } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/app/map")({
   head: () => ({
@@ -19,6 +19,12 @@ export const Route = createFileRoute("/_authenticated/app/map")({
 });
 
 const GALATI_CENTER = { lat: 45.4353, lng: 28.008 };
+
+declare global {
+  interface Window {
+    initMap?: () => void;
+  }
+}
 
 function MapPage() {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -70,9 +76,11 @@ function MapPage() {
     if (typeof google !== "undefined" && google.maps) {
       initMap();
     } else {
-      (window as unknown as Record<string, () => void>).initMap = initMap;
+      window.initMap = initMap;
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY}&loading=async&callback=initMap&channel=${import.meta.env.VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_TRACKING_ID}`;
+      const browserKey = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY"];
+      const trackingId = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_TRACKING_ID"];
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${browserKey}&loading=async&callback=initMap&channel=${trackingId}`;
       script.async = true;
       document.head.appendChild(script);
     }
@@ -155,7 +163,11 @@ function MapPage() {
     setStarting(true);
     try {
       await startRideFn({
-        data: { bike_id: bike.id, start_lat: userLocation.lat, start_lng: userLocation.lng },
+        data: {
+          bike_id: bike.id,
+          start_lat: userLocation.lat,
+          start_lng: userLocation.lng,
+        },
       });
       queryClient.invalidateQueries({ queryKey: ["active-ride"] });
       toast.success(`Cursa cu ${bike.code} a început!`);

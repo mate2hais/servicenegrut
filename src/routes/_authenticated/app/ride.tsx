@@ -2,11 +2,11 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { getActiveRide, updateRidePosition, endRide, setDestination } from "@/lib/rides.functions";
+import { getActiveRide, updateRidePosition, endRide } from "@/lib/rides.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Battery, MapPin, Navigation, Pause, Play, Square, Flag, Clock, Route, CreditCard } from "lucide-react";
+import { Battery, MapPin, Navigation, Square, Flag, Clock, Route as RouteIcon, CreditCard, ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/app/ride")({
   head: () => ({
@@ -24,7 +24,6 @@ function RidePage() {
   const fetchActiveRide = useServerFn(getActiveRide);
   const updatePosition = useServerFn(updateRidePosition);
   const endRideFn = useServerFn(endRide);
-  const setDestFn = useServerFn(setDestination);
 
   const { data: ride, isLoading } = useQuery({
     queryKey: ["active-ride"],
@@ -130,7 +129,7 @@ function RidePage() {
       const service = new google.maps.DistanceMatrixService();
       const response = await service.getDistanceMatrix({
         origins: [position],
-        destinations: [{ placeId: destination }],
+        destinations: [{ query: destination }],
         travelMode: google.maps.TravelMode.BICYCLING,
         unitSystem: google.maps.UnitSystem.METRIC,
       });
@@ -163,6 +162,14 @@ function RidePage() {
   return (
     <div className="flex min-h-[calc(100vh-4rem)] flex-col bg-background px-4 py-6">
       <div className="mx-auto w-full max-w-md space-y-4">
+        <Link
+          to="/app/map"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Înapoi la hartă
+        </Link>
+
         <div className="rounded-3xl border border-border bg-card p-6 text-center shadow-lg">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
             <Navigation className="h-8 w-8" />
@@ -177,7 +184,7 @@ function RidePage() {
 
         <div className="grid grid-cols-2 gap-4">
           <StatCard icon={<Clock className="h-5 w-5" />} label="Timp" value={formatTime(elapsed)} />
-          <StatCard icon={<Route className="h-5 w-5" />} label="Distanță" value={`${distance.toFixed(2)} km`} />
+          <StatCard icon={<RouteIcon className="h-5 w-5" />} label="Distanță" value={`${distance.toFixed(2)} km`} />
           <StatCard icon={<CreditCard className="h-5 w-5" />} label="Cost estimat" value={`${cost.toFixed(2)} lei`} />
           <StatCard icon={<MapPin className="h-5 w-5" />} label="Tarif" value="1 leu/km" />
         </div>

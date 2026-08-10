@@ -14,7 +14,128 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bikes: {
+        Row: {
+          battery_level: number
+          code: string
+          created_at: string
+          id: string
+          lat: number
+          lng: number
+          status: Database["public"]["Enums"]["bike_status"]
+          updated_at: string
+        }
+        Insert: {
+          battery_level: number
+          code: string
+          created_at?: string
+          id?: string
+          lat: number
+          lng: number
+          status?: Database["public"]["Enums"]["bike_status"]
+          updated_at?: string
+        }
+        Update: {
+          battery_level?: number
+          code?: string
+          created_at?: string
+          id?: string
+          lat?: number
+          lng?: number
+          status?: Database["public"]["Enums"]["bike_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      rides: {
+        Row: {
+          bike_id: string
+          cost_lei: number
+          created_at: string
+          destination_lat: number | null
+          destination_lng: number | null
+          distance_km: number
+          end_lat: number | null
+          end_lng: number | null
+          ended_at: string | null
+          id: string
+          start_lat: number
+          start_lng: number
+          started_at: string
+          status: Database["public"]["Enums"]["ride_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bike_id: string
+          cost_lei?: number
+          created_at?: string
+          destination_lat?: number | null
+          destination_lng?: number | null
+          distance_km?: number
+          end_lat?: number | null
+          end_lng?: number | null
+          ended_at?: string | null
+          id?: string
+          start_lat: number
+          start_lng: number
+          started_at?: string
+          status?: Database["public"]["Enums"]["ride_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bike_id?: string
+          cost_lei?: number
+          created_at?: string
+          destination_lat?: number | null
+          destination_lng?: number | null
+          distance_km?: number
+          end_lat?: number | null
+          end_lng?: number | null
+          ended_at?: string | null
+          id?: string
+          start_lat?: number
+          start_lng?: number
+          started_at?: string
+          status?: Database["public"]["Enums"]["ride_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rides_bike_id_fkey"
+            columns: ["bike_id"]
+            isOneToOne: false
+            referencedRelation: "bikes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +144,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      bike_status: "available" | "rented" | "maintenance" | "reserved"
+      ride_status: "active" | "paused" | "completed" | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +272,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      bike_status: ["available", "rented", "maintenance", "reserved"],
+      ride_status: ["active", "paused", "completed", "cancelled"],
+    },
   },
 } as const

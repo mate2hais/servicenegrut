@@ -8,6 +8,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
 
+function safeNext(value: unknown): string | undefined {
+  if (typeof value !== "string" || !value.startsWith("/") || value.startsWith("//")) return undefined;
+  return value;
+}
+
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
@@ -15,6 +20,7 @@ export const Route = createFileRoute("/auth")({
       { name: "description", content: "Intră în cont sau creează unul nou pentru a închiria biciclete în Galați." },
     ],
   }),
+  validateSearch: (s: Record<string, unknown>) => ({ next: safeNext(s['next']) }),
   component: AuthPage,
 });
 
@@ -25,12 +31,19 @@ function AuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
+
+  const goNext = () => {
+    if (next) window.location.href = next;
+    else navigate({ to: "/app/map" });
+  };
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: "/app/map" });
+      if (data.user) goNext();
     });
-  }, [navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,9 +53,13 @@ function AuthPage() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         toast.success("Bine ai revenit!");
-        navigate({ to: "/app/map" });
+        goNext();
       } else {
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { emailRedirectTo: `${window.location.origin}${next ?? "/app/map"}` },
+        });
         if (error) throw error;
         toast.success("Cont creat! Verifică emailul pentru confirmare, apoi intră în cont.");
         setIsLogin(true);
@@ -56,12 +73,13 @@ function AuthPage() {
 
   const handleGoogle = async () => {
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: `${window.location.origin}${next ?? ""}`,
     });
     if (result.error) {
       toast.error(result.error instanceof Error ? result.error.message : "Eroare Google");
     }
   };
+
 
   return (
     <div className="flex min-h-screen flex-col bg-background px-6 py-8">

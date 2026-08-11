@@ -69,6 +69,11 @@ function MapPage() {
         mapTypeControl: false,
         streetViewControl: false,
         fullscreenControl: false,
+        zoomControl: true,
+        draggable: true,
+        scrollwheel: true,
+        disableDoubleClickZoom: false,
+        gestureHandling: "greedy",
       });
       mapInstance.current = map;
       setLoadingMap(false);

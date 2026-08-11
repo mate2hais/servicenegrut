@@ -1,25 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
-import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@/integrations/supabase/types";
-
-function publicClient() {
-  const url = process.env["SUPABASE_URL"]!;
-  const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
-  return createClient<Database>(url, key, {
-    global: {
-      fetch: (input, init) => {
-        const headers = new Headers(init?.headers);
-        headers.delete("Authorization");
-        headers.set("apikey", key);
-        return fetch(input, { ...init, headers });
-      },
-    },
-    auth: { persistSession: false, autoRefreshToken: false },
-  });
-}
+import { createPublicSupabase } from "@/lib/supabase-public.server";
 
 export const listBikes = createServerFn({ method: "GET" }).handler(async () => {
-  const { data, error } = await publicClient()
+  const { data, error } = await createPublicSupabase()
     .from("bikes")
     .select("id, code, status, battery_level, lat, lng")
     .eq("status", "available")
@@ -32,7 +15,7 @@ export const listBikes = createServerFn({ method: "GET" }).handler(async () => {
 export const getBike = createServerFn({ method: "GET" })
   .inputValidator((data: { id: string }) => data)
   .handler(async ({ data }) => {
-    const { data: bike, error } = await publicClient()
+    const { data: bike, error } = await createPublicSupabase()
       .from("bikes")
       .select("id, code, status, battery_level, lat, lng")
       .eq("id", data.id)

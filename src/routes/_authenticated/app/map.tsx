@@ -187,7 +187,7 @@ function MapPage() {
 
   return (
     <div className="relative flex h-[calc(100vh-4rem)] flex-col">
-      <div ref={mapRef} className="flex-1" />
+      <div ref={mapRef} className="flex-1 touch-auto" style={{ touchAction: "pan-x pan-y" }} />
 
       {loadingMap && (
         <div className="absolute inset-0 flex items-center justify-center bg-background/80">

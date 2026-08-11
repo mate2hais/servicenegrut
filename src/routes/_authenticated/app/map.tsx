@@ -63,12 +63,18 @@ function MapPage() {
     if (!mapRef.current || mapInstance.current) return;
 
     const initMap = () => {
+      if (!mapRef.current || mapInstance.current) return;
       const map = new google.maps.Map(mapRef.current!, {
         center: GALATI_CENTER,
         zoom: 14,
         mapTypeControl: false,
         streetViewControl: false,
         fullscreenControl: false,
+        zoomControl: true,
+        draggable: true,
+        scrollwheel: true,
+        disableDoubleClickZoom: false,
+        gestureHandling: "greedy",
       });
       mapInstance.current = map;
       setLoadingMap(false);
@@ -77,13 +83,17 @@ function MapPage() {
     if (typeof google !== "undefined" && google.maps) {
       initMap();
     } else {
-      window.initMap = initMap;
-      const script = document.createElement("script");
-      const browserKey = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY"];
-      const trackingId = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_TRACKING_ID"];
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${browserKey}&loading=async&callback=initMap&channel=${trackingId}`;
-      script.async = true;
-      document.head.appendChild(script);
+      const scriptId = "google-maps-script";
+      if (!document.getElementById(scriptId)) {
+        window.initMap = initMap;
+        const script = document.createElement("script");
+        script.id = scriptId;
+        const browserKey = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY"];
+        const trackingId = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_TRACKING_ID"];
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${browserKey}&loading=async&callback=initMap&channel=${trackingId}`;
+        script.async = true;
+        document.head.appendChild(script);
+      }
     }
   }, []);
 
@@ -182,7 +192,7 @@ function MapPage() {
 
   return (
     <div className="relative flex h-[calc(100vh-4rem)] flex-col">
-      <div ref={mapRef} className="flex-1" />
+      <div ref={mapRef} className="flex-1 touch-auto" style={{ touchAction: "pan-x pan-y" }} />
 
       {loadingMap && (
         <div className="absolute inset-0 flex items-center justify-center bg-background/80">

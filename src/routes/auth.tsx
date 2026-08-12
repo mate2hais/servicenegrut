@@ -20,7 +20,10 @@ export const Route = createFileRoute("/auth")({
       { name: "description", content: "Intră în cont sau creează unul nou pentru a închiria biciclete în Galați." },
     ],
   }),
-  validateSearch: (s: Record<string, unknown>) => ({ next: safeNext(s['next']) }),
+  validateSearch: (s: Record<string, unknown>): { next?: string } => {
+    const next = safeNext(s['next']);
+    return next ? { next } : {};
+  },
   component: AuthPage,
 });
 

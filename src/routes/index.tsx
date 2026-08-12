@@ -88,6 +88,7 @@ function ChristeningInvitation() {
 
   const handleTouchStart = (e: React.TouchEvent) => {
     const touch = e.touches[0];
+    if (!touch) return;
     moveNoAway(touch.clientX, touch.clientY);
   };
 

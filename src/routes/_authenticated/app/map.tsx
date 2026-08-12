@@ -275,6 +275,13 @@ function MapPage() {
                   <p className="text-sm text-muted-foreground">
                     la {nearestBike.distance.toFixed(2)} km distanță
                   </p>
+                  <p className="mt-1 text-sm font-medium text-primary">
+                    {routing
+                      ? "Se calculează traseul..."
+                      : routeInfo
+                        ? `Traseu pe jos: ${routeInfo.km.toFixed(2)} km · ~${routeInfo.minutes} min`
+                        : ""}
+                  </p>
                 </div>
                 <BatteryIndicator level={bikes.find((b) => b.id === nearestBike.id)?.battery_level ?? 0} />
               </div>

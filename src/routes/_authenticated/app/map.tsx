@@ -155,6 +155,52 @@ function MapPage() {
     setNearestBike(nearest);
   }, [userLocation, bikes]);
 
+  useEffect(() => {
+    const bike = nearestBike ? bikes.find((b) => b.id === nearestBike.id) : null;
+    if (!userLocation || !bike || !mapInstance.current) return;
+
+    let cancelled = false;
+    setRouting(true);
+    fetchRoute({
+      data: {
+        origin: userLocation,
+        destination: { lat: bike.lat, lng: bike.lng },
+      },
+    })
+      .then((res) => {
+        if (cancelled || !mapInstance.current) return;
+        const path = google.maps.geometry
+          ? google.maps.geometry.encoding.decodePath(res.encodedPolyline)
+          : [];
+        routeLineRef.current?.setMap(null);
+        routeLineRef.current = new google.maps.Polyline({
+          path,
+          map: mapInstance.current,
+          strokeColor: "#22c55e",
+          strokeOpacity: 0.9,
+          strokeWeight: 5,
+        });
+        const bounds = new google.maps.LatLngBounds();
+        path.forEach((p) => bounds.extend(p));
+        if (path.length) mapInstance.current.fitBounds(bounds, 80);
+        setRouteInfo({
+          km: res.distanceMeters / 1000,
+          minutes: Math.max(1, Math.round(res.durationSeconds / 60)),
+        });
+      })
+      .catch((err: unknown) => {
+        if (!cancelled)
+          toast.error(err instanceof Error ? err.message : "Nu am putut calcula traseul");
+      })
+      .finally(() => {
+        if (!cancelled) setRouting(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [userLocation, nearestBike?.id, bikes, fetchRoute]);
+
   const locateMe = () => {
     navigator.geolocation.getCurrentPosition(
       (pos) => {

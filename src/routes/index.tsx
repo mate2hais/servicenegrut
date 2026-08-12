@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Baby, Heart, Star, Cross, Church, Music, Gift, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -17,85 +17,160 @@ export const Route = createFileRoute("/")({
 });
 
 const PADDING = 24;
-const FLEE_DISTANCE = 140;
+const FLEE_DISTANCE = 130;
+const SAFE_MARGIN = 16;
 
 function ChristeningInvitation() {
   const [confirmed, setConfirmed] = useState(false);
-  const [noBtnStyle, setNoBtnStyle] = useState({ left: 0, top: 0 });
+  const [noBtnPos, setNoBtnPos] = useState({ left: 0, top: 0 });
   const [mounted, setMounted] = useState(false);
   const areaRef = useRef<HTMLDivElement>(null);
   const noBtnRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    setMounted(true);
+  const getButtonSize = useCallback(() => {
+    const btn = noBtnRef.current;
+    if (!btn) return { width: 0, height: 0 };
+    const rect = btn.getBoundingClientRect();
+    return { width: rect.width, height: rect.height };
   }, []);
 
-  const moveNoAway = (cursorX: number, cursorY: number) => {
-    const area = areaRef.current;
-    const btn = noBtnRef.current;
-    if (!area || !btn) return;
+  const clampToViewport = useCallback(
+    (left: number, top: number) => {
+      const { width, height } = getButtonSize();
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      return {
+        left: Math.max(PADDING, Math.min(vw - width - PADDING, left)),
+        top: Math.max(PADDING, Math.min(vh - height - PADDING, top)),
+      };
+    },
+    [getButtonSize]
+  );
 
-    const areaRect = area.getBoundingClientRect();
-    const btnRect = btn.getBoundingClientRect();
-    const btnW = btnRect.width;
-    const btnH = btnRect.height;
+  const placeButtonAvoidingCursor = useCallback(
+    (cursorX: number, cursorY: number, avoidDa = true) => {
+      const { width, height } = getButtonSize();
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const maxLeft = vw - width - PADDING;
+      const maxTop = vh - height - PADDING;
 
-    const maxLeft = areaRect.width - btnW - PADDING;
-    const maxTop = areaRect.height - btnH - PADDING;
-
-    let attempts = 0;
-    let newLeft = 0;
-    let newTop = 0;
-
-    // Try to find a spot far enough from the cursor and not too close to the "Da" button area.
-    while (attempts < 40) {
-      newLeft = PADDING + Math.random() * Math.max(0, maxLeft - PADDING);
-      newTop = PADDING + Math.random() * Math.max(0, maxTop - PADDING);
-
-      const centerX = areaRect.left + newLeft + btnW / 2;
-      const centerY = areaRect.top + newTop + btnH / 2;
-      const dist = Math.hypot(centerX - cursorX, centerY - cursorY);
-
-      // Keep away from the static "Da" button, which sits near the bottom center.
       const daBtn = document.getElementById("da-button");
-      let farFromDa = true;
-      if (daBtn) {
+      let daCenter: { x: number; y: number } | null = null;
+      if (avoidDa && daBtn) {
         const daRect = daBtn.getBoundingClientRect();
-        const daCenterX = daRect.left + daRect.width / 2;
-        const daCenterY = daRect.top + daRect.height / 2;
-        const distDa = Math.hypot(centerX - daCenterX, centerY - daCenterY);
-        if (distDa < 140) farFromDa = false;
+        daCenter = {
+          x: daRect.left + daRect.width / 2,
+          y: daRect.top + daRect.height / 2,
+        };
       }
 
-      if (dist > FLEE_DISTANCE && farFromDa) break;
-      attempts++;
-    }
+      let bestLeft = 0;
+      let bestTop = 0;
+      let bestScore = -Infinity;
 
-    setNoBtnStyle({ left: newLeft, top: newTop });
-  };
+      // Try several random spots and pick the one that keeps the button most visible
+      // and far from the cursor.
+      for (let i = 0; i < 50; i++) {
+        const left = PADDING + Math.random() * Math.max(0, maxLeft - PADDING);
+        const top = PADDING + Math.random() * Math.max(0, maxTop - PADDING);
+        const centerX = left + width / 2;
+        const centerY = top + height / 2;
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const btn = noBtnRef.current;
-    if (!btn) return;
-    const rect = btn.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
-    if (dist < FLEE_DISTANCE) {
-      moveNoAway(e.clientX, e.clientY);
-    }
-  };
+        const distCursor = Math.hypot(centerX - cursorX, centerY - cursorY);
+        const distDa = daCenter ? Math.hypot(centerX - daCenter.x, centerY - daCenter.y) : 9999;
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    if (!touch) return;
-    moveNoAway(touch.clientX, touch.clientY);
-  };
+        const score = distCursor + distDa * 0.5;
+        if (score > bestScore) {
+          bestScore = score;
+          bestLeft = left;
+          bestTop = top;
+        }
+      }
+
+      // If the best random spot is still too close to the cursor, push it away.
+      const centerX = bestLeft + width / 2;
+      const centerY = bestTop + height / 2;
+      const distCursor = Math.hypot(centerX - cursorX, centerY - cursorY);
+      if (distCursor < FLEE_DISTANCE) {
+        const angle = Math.atan2(centerY - cursorY, centerX - cursorX);
+        const push = FLEE_DISTANCE - distCursor + SAFE_MARGIN;
+        bestLeft += Math.cos(angle) * push;
+        bestTop += Math.sin(angle) * push;
+      }
+
+      const clamped = clampToViewport(bestLeft, bestTop);
+      setNoBtnPos(clamped);
+    },
+    [clampToViewport, getButtonSize]
+  );
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      const btn = noBtnRef.current;
+      if (!btn) return;
+      const rect = btn.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+      if (dist < FLEE_DISTANCE) {
+        placeButtonAvoidingCursor(e.clientX, e.clientY);
+      }
+    },
+    [placeButtonAvoidingCursor]
+  );
+
+  const handleTouchStart = useCallback(
+    (e: TouchEvent) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+      placeButtonAvoidingCursor(touch.clientX, touch.clientY);
+    },
+    [placeButtonAvoidingCursor]
+  );
+
+  const keepInViewport = useCallback(() => {
+    const { width, height } = getButtonSize();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    setNoBtnPos((prev) => ({
+      left: Math.max(PADDING, Math.min(vw - width - PADDING, prev.left)),
+      top: Math.max(PADDING, Math.min(vh - height - PADDING, prev.top)),
+    }));
+  }, [getButtonSize]);
+
+  useEffect(() => {
+    setMounted(true);
+    // Initial placement: bottom-right corner, inside the viewport.
+    const placeInitial = () => {
+      const { width, height } = getButtonSize();
+      if (!width || !height) {
+        setTimeout(placeInitial, 50);
+        return;
+      }
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      setNoBtnPos({
+        left: vw - width - PADDING,
+        top: vh - height - PADDING - 80,
+      });
+    };
+    placeInitial();
+
+    window.addEventListener("resize", keepInViewport);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("touchstart", handleTouchStart, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", keepInViewport);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("touchstart", handleTouchStart);
+    };
+  }, [getButtonSize, handleMouseMove, handleTouchStart, keepInViewport]);
 
   return (
     <div
       ref={areaRef}
-      onMouseMove={handleMouseMove}
       className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background px-6 py-10 text-foreground"
     >
       {/* Decorative floating elements */}
@@ -138,9 +213,7 @@ function ChristeningInvitation() {
               Cu inimi pline de bucurie, te invităm să fii alături de noi la botezul micuțului
               nostru, care își va primi numele sfânt alături de cei dragi.
             </p>
-            <p className="font-medium text-foreground">
-              Părinți: Dediu Liviu și Dediu Giulia
-            </p>
+            <p className="font-medium text-foreground">Părinți: Dediu Liviu și Dediu Giulia</p>
             <p className="text-base text-muted-foreground">
               Fie ca această zi specială să fie binecuvântată, plină de zâmbete, emoție și
               amintiri frumoase alături de familie și prieteni.
@@ -153,29 +226,14 @@ function ChristeningInvitation() {
                 Vei veni să sărbătorim împreună?
               </p>
 
-              <div className="relative mx-auto flex min-h-[14rem] w-full max-w-md flex-col items-center justify-center gap-4">
+              <div className="mx-auto flex w-full max-w-md flex-col items-center justify-center gap-4">
                 <button
                   id="da-button"
                   onClick={() => setConfirmed(true)}
-                  className="z-20 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-10 py-3.5 text-lg font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:scale-105 active:scale-95"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-10 py-3.5 text-lg font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-transform hover:scale-105 active:scale-95"
                 >
                   <Heart className="h-5 w-5" />
                   Da, cu drag!
-                </button>
-
-                <button
-                  ref={noBtnRef}
-                  onMouseEnter={(e) => moveNoAway(e.clientX, e.clientY)}
-                  onTouchStart={handleTouchStart}
-                  style={{
-                    position: "absolute",
-                    left: noBtnStyle.left,
-                    top: noBtnStyle.top,
-                    transition: "left 0.25s ease-out, top 0.25s ease-out",
-                  }}
-                  className="inline-flex items-center justify-center rounded-full border border-border bg-muted px-8 py-3 text-base font-medium text-muted-foreground shadow-sm"
-                >
-                  Nu pot
                 </button>
               </div>
             </div>
@@ -197,6 +255,24 @@ function ChristeningInvitation() {
       <footer className="relative z-10 mt-10 text-center text-sm text-muted-foreground">
         Cu drag, Familia Dediu
       </footer>
+
+      {/* The "Nu pot" button roams freely across the whole page */}
+      {!confirmed && (
+        <button
+          ref={noBtnRef}
+          style={{
+            position: "fixed",
+            left: noBtnPos.left,
+            top: noBtnPos.top,
+            transition: "left 0.3s ease-out, top 0.3s ease-out",
+            zIndex: 9999,
+          }}
+          className="inline-flex items-center justify-center rounded-full border border-border bg-muted px-8 py-3 text-base font-medium text-muted-foreground shadow-lg"
+          aria-label="Nu pot participa"
+        >
+          Nu pot
+        </button>
+      )}
     </div>
   );
 }

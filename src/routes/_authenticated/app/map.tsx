@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { listBikes } from "@/lib/bikes.functions";
+import { computeBikeRoute } from "@/lib/routes.functions";
 import { getActiveRide, startRide } from "@/lib/rides.functions";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";

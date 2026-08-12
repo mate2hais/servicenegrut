@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { listBikes } from "@/lib/bikes.functions";
+import { computeBikeRoute } from "@/lib/routes.functions";
 import { getActiveRide, startRide } from "@/lib/rides.functions";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -32,8 +33,11 @@ function MapPage() {
   const mapInstance = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
   const userMarkerRef = useRef<google.maps.Marker | null>(null);
+  const routeLineRef = useRef<google.maps.Polyline | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [nearestBike, setNearestBike] = useState<{ id: string; distance: number } | null>(null);
+  const [routeInfo, setRouteInfo] = useState<{ km: number; minutes: number } | null>(null);
+  const [routing, setRouting] = useState(false);
   const [loadingMap, setLoadingMap] = useState(true);
   const [starting, setStarting] = useState(false);
   const navigate = useNavigate();
@@ -42,6 +46,7 @@ function MapPage() {
   const fetchBikes = useServerFn(listBikes);
   const fetchActiveRide = useServerFn(getActiveRide);
   const startRideFn = useServerFn(startRide);
+  const fetchRoute = useServerFn(computeBikeRoute);
 
   const { data: bikes = [] } = useQuery({
     queryKey: ["bikes"],
@@ -90,7 +95,7 @@ function MapPage() {
         script.id = scriptId;
         const browserKey = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY"];
         const trackingId = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_TRACKING_ID"];
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${browserKey}&loading=async&callback=initMap&channel=${trackingId}`;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${browserKey}&loading=async&libraries=geometry&callback=initMap&channel=${trackingId}`;
         script.async = true;
         document.head.appendChild(script);
       }
@@ -149,6 +154,52 @@ function MapPage() {
     });
     setNearestBike(nearest);
   }, [userLocation, bikes]);
+
+  useEffect(() => {
+    const bike = nearestBike ? bikes.find((b) => b.id === nearestBike.id) : null;
+    if (!userLocation || !bike || !mapInstance.current) return;
+
+    let cancelled = false;
+    setRouting(true);
+    fetchRoute({
+      data: {
+        origin: userLocation,
+        destination: { lat: bike.lat, lng: bike.lng },
+      },
+    })
+      .then((res) => {
+        if (cancelled || !mapInstance.current) return;
+        const path = google.maps.geometry
+          ? google.maps.geometry.encoding.decodePath(res.encodedPolyline)
+          : [];
+        routeLineRef.current?.setMap(null);
+        routeLineRef.current = new google.maps.Polyline({
+          path,
+          map: mapInstance.current,
+          strokeColor: "#22c55e",
+          strokeOpacity: 0.9,
+          strokeWeight: 5,
+        });
+        const bounds = new google.maps.LatLngBounds();
+        path.forEach((p) => bounds.extend(p));
+        if (path.length) mapInstance.current.fitBounds(bounds, 80);
+        setRouteInfo({
+          km: res.distanceMeters / 1000,
+          minutes: Math.max(1, Math.round(res.durationSeconds / 60)),
+        });
+      })
+      .catch((err: unknown) => {
+        if (!cancelled)
+          toast.error(err instanceof Error ? err.message : "Nu am putut calcula traseul");
+      })
+      .finally(() => {
+        if (!cancelled) setRouting(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [userLocation, nearestBike?.id, bikes, fetchRoute]);
 
   const locateMe = () => {
     navigator.geolocation.getCurrentPosition(
@@ -223,6 +274,13 @@ function MapPage() {
                   </h2>
                   <p className="text-sm text-muted-foreground">
                     la {nearestBike.distance.toFixed(2)} km distanță
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-primary">
+                    {routing
+                      ? "Se calculează traseul..."
+                      : routeInfo
+                        ? `Traseu pe jos: ${routeInfo.km.toFixed(2)} km · ~${routeInfo.minutes} min`
+                        : ""}
                   </p>
                 </div>
                 <BatteryIndicator level={bikes.find((b) => b.id === nearestBike.id)?.battery_level ?? 0} />

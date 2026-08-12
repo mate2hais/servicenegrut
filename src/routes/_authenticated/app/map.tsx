@@ -95,7 +95,7 @@ function MapPage() {
         script.id = scriptId;
         const browserKey = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY"];
         const trackingId = import.meta.env["VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_TRACKING_ID"];
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${browserKey}&loading=async&callback=initMap&channel=${trackingId}`;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${browserKey}&loading=async&libraries=geometry&callback=initMap&channel=${trackingId}`;
         script.async = true;
         document.head.appendChild(script);
       }

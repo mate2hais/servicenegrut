@@ -33,8 +33,11 @@ function MapPage() {
   const mapInstance = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
   const userMarkerRef = useRef<google.maps.Marker | null>(null);
+  const routeLineRef = useRef<google.maps.Polyline | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [nearestBike, setNearestBike] = useState<{ id: string; distance: number } | null>(null);
+  const [routeInfo, setRouteInfo] = useState<{ km: number; minutes: number } | null>(null);
+  const [routing, setRouting] = useState(false);
   const [loadingMap, setLoadingMap] = useState(true);
   const [starting, setStarting] = useState(false);
   const navigate = useNavigate();
@@ -43,6 +46,7 @@ function MapPage() {
   const fetchBikes = useServerFn(listBikes);
   const fetchActiveRide = useServerFn(getActiveRide);
   const startRideFn = useServerFn(startRide);
+  const fetchRoute = useServerFn(computeBikeRoute);
 
   const { data: bikes = [] } = useQuery({
     queryKey: ["bikes"],

@@ -106,8 +106,9 @@ const rotate = (shape: number[][], dir: 1 | -1): number[][] => {
   const out = Array.from({ length: n }, () => Array<number>(n).fill(0));
   for (let y = 0; y < n; y++) {
     for (let x = 0; x < n; x++) {
-      if (dir === 1) out[x][n - 1 - y] = shape[y][x];
-      else out[n - 1 - x][y] = shape[y][x];
+      const v = shape[y]![x]!;
+      if (dir === 1) out[x]![n - 1 - y] = v;
+      else out[n - 1 - x]![y] = v;
     }
   }
   return out;
@@ -116,7 +117,7 @@ const rotate = (shape: number[][], dir: 1 | -1): number[][] => {
 const randomType = () => 1 + Math.floor(Math.random() * 7);
 
 const spawnPiece = (type: number): Piece => {
-  const shape = SHAPES[type].map((r) => [...r]);
+  const shape = SHAPES[type]!.map((r) => [...r]);
   return { shape, type, x: Math.floor((COLS - shape.length) / 2), y: -1 };
 };
 
@@ -124,11 +125,11 @@ const collides = (board: Cell[][], piece: Piece, dx = 0, dy = 0, shape?: number[
   const s = shape ?? piece.shape;
   for (let y = 0; y < s.length; y++) {
     for (let x = 0; x < s.length; x++) {
-      if (!s[y][x]) continue;
+      if (!s[y]![x]) continue;
       const nx = piece.x + x + dx;
       const ny = piece.y + y + dy;
       if (nx < 0 || nx >= COLS || ny >= ROWS) return true;
-      if (ny >= 0 && board[ny][nx]) return true;
+      if (ny >= 0 && board[ny]![nx]) return true;
     }
   }
   return false;
@@ -243,7 +244,7 @@ function TetrisPage() {
   const clearLines = useCallback(
     (b: Cell[][]) => {
       const full: number[] = [];
-      for (let y = 0; y < ROWS; y++) if (b[y].every((c) => c !== 0)) full.push(y);
+      for (let y = 0; y < ROWS; y++) if (b[y]!.every((c) => c !== 0)) full.push(y);
 
       let bonusRow: number | null = null;
       if (full.length > 0) {
@@ -255,7 +256,7 @@ function TetrisPage() {
           let bestCount = Infinity;
           for (let y = 0; y < ROWS; y++) {
             if (full.includes(y)) continue;
-            const count = b[y].filter((c) => c !== 0).length;
+            const count = b[y]!.filter((c) => c !== 0).length;
             if (count > 0 && count < bestCount) {
               bestCount = count;
               best = y;
@@ -282,14 +283,14 @@ function TetrisPage() {
     let dead = false;
     for (let y = 0; y < p.shape.length; y++) {
       for (let x = 0; x < p.shape.length; x++) {
-        if (!p.shape[y][x]) continue;
+        if (!p.shape[y]![x]) continue;
         const ny = p.y + y;
         const nx = p.x + x;
         if (ny < 0) {
           dead = true;
           continue;
         }
-        b[ny][nx] = p.type;
+        b[ny]![nx] = p.type;
       }
     }
     sound.playDrop();
@@ -448,15 +449,15 @@ function TetrisPage() {
   if (piece) {
     for (let y = 0; y < piece.shape.length; y++) {
       for (let x = 0; x < piece.shape.length; x++) {
-        if (!piece.shape[y][x]) continue;
+        if (!piece.shape[y]![x]) continue;
         const ny = piece.y + y;
         const nx = piece.x + x;
-        if (ny >= 0 && ny < ROWS && nx >= 0 && nx < COLS) view[ny][nx] = piece.type;
+        if (ny >= 0 && ny < ROWS && nx >= 0 && nx < COLS) view[ny]![nx] = piece.type;
       }
     }
   }
 
-  const nextShape = SHAPES[nextType];
+  const nextShape = SHAPES[nextType]!;
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center bg-background px-4 py-6 text-foreground">

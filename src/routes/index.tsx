@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Baby, Heart, Star, Cross, Church, Music, Gift, Sparkles } from "lucide-react";
 
@@ -254,13 +254,8 @@ function ChristeningInvitation() {
 
       <footer className="relative z-10 mt-10 flex flex-col items-center gap-3 text-center text-sm text-muted-foreground">
         <span>Cu drag, Familia Dediu</span>
-        <Link
-          to="/tetris"
-          className="inline-flex items-center justify-center rounded-full border border-border bg-card px-5 py-2 font-medium text-foreground shadow-sm transition-colors hover:bg-accent"
-        >
-          🎮 Joacă Tetris
-        </Link>
       </footer>
+
 
       {/* The "Nu pot" button roams freely across the whole page */}
       {!confirmed && (

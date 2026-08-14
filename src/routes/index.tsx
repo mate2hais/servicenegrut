@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Baby, Heart, Star, Cross, Church, Music, Gift, Sparkles } from "lucide-react";
 

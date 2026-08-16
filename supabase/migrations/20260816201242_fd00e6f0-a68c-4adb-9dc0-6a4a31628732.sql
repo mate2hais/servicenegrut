@@ -1,0 +1,1 @@
+DELETE FROM public.appointments WHERE plate = 'GL99TST';

@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          car_model: string | null
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          notes: string | null
+          phone: string
+          plate: string
+          preferred_date: string
+          preferred_time: string
+          status: string
+          vehicle_category: string
+        }
+        Insert: {
+          car_model?: string | null
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          notes?: string | null
+          phone: string
+          plate: string
+          preferred_date: string
+          preferred_time: string
+          status?: string
+          vehicle_category: string
+        }
+        Update: {
+          car_model?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          notes?: string | null
+          phone?: string
+          plate?: string
+          preferred_date?: string
+          preferred_time?: string
+          status?: string
+          vehicle_category?: string
+        }
+        Relationships: []
+      }
       bikes: {
         Row: {
           battery_level: number

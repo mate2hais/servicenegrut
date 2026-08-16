@@ -9,6 +9,9 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
+import { Header } from "@/components/site/Header";
+import { Footer } from "@/components/site/Footer";
+
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -77,15 +80,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1" },
-      { title: "BikeGo Galați — Închiriază o bicicletă" },
-      { name: "description", content: "Aplicație de închiriat biciclete în Galați. Găsește cea mai apropiată bicicletă, urmărește cursa în timp real și plătește simplu." },
-      { name: "author", content: "BikeGo" },
-      { property: "og:title", content: "BikeGo Galați — Închiriază o bicicletă" },
-      { property: "og:description", content: "Aplicație de închiriat biciclete în Galați. Găsește cea mai apropiată bicicletă, urmărește cursa în timp real și plătește simplu." },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: "AutoNeg — Stație ITP autorizată RAR în Galați" },
+      { name: "description", content: "Stație ITP autorizată RAR în Galați: programare online, prețuri transparente și ingineri atestați." },
+      { name: "author", content: "AutoNeg" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@bikego" },
     ],
     links: [
       {
@@ -103,7 +103,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="ro" className="light">
+    <html lang="ro">
       <head>
         <HeadContent />
       </head>
@@ -120,8 +120,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <div className="flex min-h-screen flex-col bg-background text-foreground">
+        <Header />
+        <main className="flex-1">
+          <Outlet />
+        </main>
+        <Footer />
+      </div>
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );
 }
+

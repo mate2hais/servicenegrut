@@ -10,162 +10,128 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as McpRouteImport } from './routes/mcp'
-import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
-import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
-import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
-import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
-import { Route as AuthenticatedAppHistoryRouteImport } from './routes/_authenticated/app/history'
-import { Route as AuthenticatedAppMapRouteImport } from './routes/_authenticated/app/map'
-import { Route as AuthenticatedAppRideRouteImport } from './routes/_authenticated/app/ride'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as EchipaRouteImport } from './routes/echipa'
+import { Route as GalerieRouteImport } from './routes/galerie'
+import { Route as InformatiiRouteImport } from './routes/informatii'
+import { Route as PreturiRouteImport } from './routes/preturi'
+import { Route as ProgramareRouteImport } from './routes/programare'
+import { Route as ServiciiRouteImport } from './routes/servicii'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const EchipaRoute = EchipaRouteImport.update({
+  id: '/echipa',
+  path: '/echipa',
   getParentRoute: () => rootRouteImport,
 } as any)
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
+const GalerieRoute = GalerieRouteImport.update({
+  id: '/galerie',
+  path: '/galerie',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Char91DotmcpChar93ListToolsRoute =
-  Char91DotmcpChar93ListToolsRouteImport.update({
-    id: '/.mcp/list-tools',
-    path: '/.mcp/list-tools',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const Char91DotwellKnownChar93OauthProtectedResourceRoute =
-  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
-    id: '/.well-known/oauth-protected-resource',
-    path: '/.well-known/oauth-protected-resource',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
-  id: '/.lovable/oauth/consent',
-  path: '/.lovable/oauth/consent',
+const InformatiiRoute = InformatiiRouteImport.update({
+  id: '/informatii',
+  path: '/informatii',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Char91DotmcpChar93InvokeToolToolRoute =
-  Char91DotmcpChar93InvokeToolToolRouteImport.update({
-    id: '/.mcp/invoke-tool/$tool',
-    path: '/.mcp/invoke-tool/$tool',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const AuthenticatedAppHistoryRoute = AuthenticatedAppHistoryRouteImport.update({
-  id: '/app/history',
-  path: '/app/history',
-  getParentRoute: () => AuthenticatedRouteRoute,
+const PreturiRoute = PreturiRouteImport.update({
+  id: '/preturi',
+  path: '/preturi',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedAppMapRoute = AuthenticatedAppMapRouteImport.update({
-  id: '/app/map',
-  path: '/app/map',
-  getParentRoute: () => AuthenticatedRouteRoute,
+const ProgramareRoute = ProgramareRouteImport.update({
+  id: '/programare',
+  path: '/programare',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedAppRideRoute = AuthenticatedAppRideRouteImport.update({
-  id: '/app/ride',
-  path: '/app/ride',
-  getParentRoute: () => AuthenticatedRouteRoute,
+const ServiciiRoute = ServiciiRouteImport.update({
+  id: '/servicii',
+  path: '/servicii',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
-  '/mcp': typeof McpRoute
-  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
-  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
-  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
-  '/app/history': typeof AuthenticatedAppHistoryRoute
-  '/app/map': typeof AuthenticatedAppMapRoute
-  '/app/ride': typeof AuthenticatedAppRideRoute
+  '/contact': typeof ContactRoute
+  '/echipa': typeof EchipaRoute
+  '/galerie': typeof GalerieRoute
+  '/informatii': typeof InformatiiRoute
+  '/preturi': typeof PreturiRoute
+  '/programare': typeof ProgramareRoute
+  '/servicii': typeof ServiciiRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
-  '/mcp': typeof McpRoute
-  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
-  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
-  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
-  '/app/history': typeof AuthenticatedAppHistoryRoute
-  '/app/map': typeof AuthenticatedAppMapRoute
-  '/app/ride': typeof AuthenticatedAppRideRoute
+  '/contact': typeof ContactRoute
+  '/echipa': typeof EchipaRoute
+  '/galerie': typeof GalerieRoute
+  '/informatii': typeof InformatiiRoute
+  '/preturi': typeof PreturiRoute
+  '/programare': typeof ProgramareRoute
+  '/servicii': typeof ServiciiRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/auth': typeof AuthRoute
-  '/mcp': typeof McpRoute
-  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
-  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
-  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
-  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
-  '/_authenticated/app/history': typeof AuthenticatedAppHistoryRoute
-  '/_authenticated/app/map': typeof AuthenticatedAppMapRoute
-  '/_authenticated/app/ride': typeof AuthenticatedAppRideRoute
+  '/contact': typeof ContactRoute
+  '/echipa': typeof EchipaRoute
+  '/galerie': typeof GalerieRoute
+  '/informatii': typeof InformatiiRoute
+  '/preturi': typeof PreturiRoute
+  '/programare': typeof ProgramareRoute
+  '/servicii': typeof ServiciiRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/auth'
-    | '/mcp'
-    | '/.mcp/list-tools'
-    | '/.well-known/oauth-protected-resource'
-    | '/.lovable/oauth/consent'
-    | '/.mcp/invoke-tool/$tool'
-    | '/app/history'
-    | '/app/map'
-    | '/app/ride'
+    | '/contact'
+    | '/echipa'
+    | '/galerie'
+    | '/informatii'
+    | '/preturi'
+    | '/programare'
+    | '/servicii'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/auth'
-    | '/mcp'
-    | '/.mcp/list-tools'
-    | '/.well-known/oauth-protected-resource'
-    | '/.lovable/oauth/consent'
-    | '/.mcp/invoke-tool/$tool'
-    | '/app/history'
-    | '/app/map'
-    | '/app/ride'
+    | '/contact'
+    | '/echipa'
+    | '/galerie'
+    | '/informatii'
+    | '/preturi'
+    | '/programare'
+    | '/servicii'
   id:
     | '__root__'
     | '/'
-    | '/_authenticated'
-    | '/auth'
-    | '/mcp'
-    | '/.mcp/list-tools'
-    | '/.well-known/oauth-protected-resource'
-    | '/.lovable/oauth/consent'
-    | '/.mcp/invoke-tool/$tool'
-    | '/_authenticated/app/history'
-    | '/_authenticated/app/map'
-    | '/_authenticated/app/ride'
+    | '/contact'
+    | '/echipa'
+    | '/galerie'
+    | '/informatii'
+    | '/preturi'
+    | '/programare'
+    | '/servicii'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthRoute: typeof AuthRoute
-  McpRoute: typeof McpRoute
-  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
-  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
-  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
-  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
+  ContactRoute: typeof ContactRoute
+  EchipaRoute: typeof EchipaRoute
+  GalerieRoute: typeof GalerieRoute
+  InformatiiRoute: typeof InformatiiRoute
+  PreturiRoute: typeof PreturiRoute
+  ProgramareRoute: typeof ProgramareRoute
+  ServiciiRoute: typeof ServiciiRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -177,104 +143,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/echipa': {
+      id: '/echipa'
+      path: '/echipa'
+      fullPath: '/echipa'
+      preLoaderRoute: typeof EchipaRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
+    '/galerie': {
+      id: '/galerie'
+      path: '/galerie'
+      fullPath: '/galerie'
+      preLoaderRoute: typeof GalerieRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.mcp/list-tools': {
-      id: '/.mcp/list-tools'
-      path: '/.mcp/list-tools'
-      fullPath: '/.mcp/list-tools'
-      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+    '/informatii': {
+      id: '/informatii'
+      path: '/informatii'
+      fullPath: '/informatii'
+      preLoaderRoute: typeof InformatiiRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.well-known/oauth-protected-resource': {
-      id: '/.well-known/oauth-protected-resource'
-      path: '/.well-known/oauth-protected-resource'
-      fullPath: '/.well-known/oauth-protected-resource'
-      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+    '/preturi': {
+      id: '/preturi'
+      path: '/preturi'
+      fullPath: '/preturi'
+      preLoaderRoute: typeof PreturiRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.lovable/oauth/consent': {
-      id: '/.lovable/oauth/consent'
-      path: '/.lovable/oauth/consent'
-      fullPath: '/.lovable/oauth/consent'
-      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+    '/programare': {
+      id: '/programare'
+      path: '/programare'
+      fullPath: '/programare'
+      preLoaderRoute: typeof ProgramareRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/.mcp/invoke-tool/$tool': {
-      id: '/.mcp/invoke-tool/$tool'
-      path: '/.mcp/invoke-tool/$tool'
-      fullPath: '/.mcp/invoke-tool/$tool'
-      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+    '/servicii': {
+      id: '/servicii'
+      path: '/servicii'
+      fullPath: '/servicii'
+      preLoaderRoute: typeof ServiciiRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/app/history': {
-      id: '/_authenticated/app/history'
-      path: '/app/history'
-      fullPath: '/app/history'
-      preLoaderRoute: typeof AuthenticatedAppHistoryRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/app/map': {
-      id: '/_authenticated/app/map'
-      path: '/app/map'
-      fullPath: '/app/map'
-      preLoaderRoute: typeof AuthenticatedAppMapRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/app/ride': {
-      id: '/_authenticated/app/ride'
-      path: '/app/ride'
-      fullPath: '/app/ride'
-      preLoaderRoute: typeof AuthenticatedAppRideRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
-interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAppHistoryRoute: typeof AuthenticatedAppHistoryRoute
-  AuthenticatedAppMapRoute: typeof AuthenticatedAppMapRoute
-  AuthenticatedAppRideRoute: typeof AuthenticatedAppRideRoute
-}
-
-const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAppHistoryRoute: AuthenticatedAppHistoryRoute,
-  AuthenticatedAppMapRoute: AuthenticatedAppMapRoute,
-  AuthenticatedAppRideRoute: AuthenticatedAppRideRoute,
-}
-
-const AuthenticatedRouteRouteWithChildren =
-  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AuthRoute: AuthRoute,
-  McpRoute: McpRoute,
-  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
-  Char91DotwellKnownChar93OauthProtectedResourceRoute:
-    Char91DotwellKnownChar93OauthProtectedResourceRoute,
-  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
-  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
+  ContactRoute: ContactRoute,
+  EchipaRoute: EchipaRoute,
+  GalerieRoute: GalerieRoute,
+  InformatiiRoute: InformatiiRoute,
+  PreturiRoute: PreturiRoute,
+  ProgramareRoute: ProgramareRoute,
+  ServiciiRoute: ServiciiRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -7,8 +7,9 @@ export const Route = createFileRoute("/contact")({
     meta: [
       { title: "Contact stație ITP AutoNeg — Galați" },
       { name: "description", content: "Adresă, telefon, email și program de lucru pentru stația ITP AutoNeg din Galați. Sună-ne sau programează-te online." },
-      { property: "og:title", content: "Contact stație ITP AutoNeg — Galați" },
-      { property: "og:description", content: "Ne găsești în Galați, Str. Traian nr. 128. Program luni–sâmbătă." },
+      { property: "og:title", content: "Contact stație ITP AutoNeg — Com. Corod, Jud. Galati" },
+      { property: "og:description", content: "Ne găsești în ția ITP AutoNeg din Galați. Sună-ne sau programează-te online." },
+      { property: "og:title", content: "Contact stație ITP AutoNeg — , Str. Stefan cel Mare nr. 128. Program luni–sâmbătă." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

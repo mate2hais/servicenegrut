@@ -14,83 +14,294 @@ export type Database = {
   }
   public: {
     Tables: {
-      appointments: {
+      classes: {
         Row: {
-          car_model: string | null
+          age_group: Database["public"]["Enums"]["age_group"]
+          coach_id: string | null
           created_at: string
-          email: string | null
-          full_name: string
+          day_of_week: number
+          discipline: Database["public"]["Enums"]["discipline"]
+          end_time: string
           id: string
-          notes: string | null
-          phone: string
-          plate: string
-          preferred_date: string
-          preferred_time: string
-          status: string
-          vehicle_category: string
-        }
-        Insert: {
-          car_model?: string | null
-          created_at?: string
-          email?: string | null
-          full_name: string
-          id?: string
-          notes?: string | null
-          phone: string
-          plate: string
-          preferred_date: string
-          preferred_time: string
-          status?: string
-          vehicle_category: string
-        }
-        Update: {
-          car_model?: string | null
-          created_at?: string
-          email?: string | null
-          full_name?: string
-          id?: string
-          notes?: string | null
-          phone?: string
-          plate?: string
-          preferred_date?: string
-          preferred_time?: string
-          status?: string
-          vehicle_category?: string
-        }
-        Relationships: []
-      }
-      bikes: {
-        Row: {
-          battery_level: number
-          code: string
-          created_at: string
-          id: string
-          lat: number
-          lng: number
-          status: Database["public"]["Enums"]["bike_status"]
+          level: string
+          room: string | null
+          start_time: string
+          title: string
           updated_at: string
         }
         Insert: {
-          battery_level: number
-          code: string
+          age_group: Database["public"]["Enums"]["age_group"]
+          coach_id?: string | null
           created_at?: string
+          day_of_week: number
+          discipline: Database["public"]["Enums"]["discipline"]
+          end_time: string
           id?: string
-          lat: number
-          lng: number
-          status?: Database["public"]["Enums"]["bike_status"]
+          level?: string
+          room?: string | null
+          start_time: string
+          title: string
           updated_at?: string
         }
         Update: {
-          battery_level?: number
-          code?: string
+          age_group?: Database["public"]["Enums"]["age_group"]
+          coach_id?: string | null
           created_at?: string
+          day_of_week?: number
+          discipline?: Database["public"]["Enums"]["discipline"]
+          end_time?: string
           id?: string
-          lat?: number
-          lng?: number
-          status?: Database["public"]["Enums"]["bike_status"]
+          level?: string
+          room?: string | null
+          start_time?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classes_coach_id_fkey"
+            columns: ["coach_id"]
+            isOneToOne: false
+            referencedRelation: "coaches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coaches: {
+        Row: {
+          bio: string | null
+          created_at: string
+          disciplines: Database["public"]["Enums"]["discipline"][]
+          full_name: string
+          id: string
+          photo_url: string | null
+          rank: string | null
+          sort_order: number
+          title: string
+          updated_at: string
+          years_experience: number
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          disciplines?: Database["public"]["Enums"]["discipline"][]
+          full_name: string
+          id?: string
+          photo_url?: string | null
+          rank?: string | null
+          sort_order?: number
+          title: string
+          updated_at?: string
+          years_experience?: number
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          disciplines?: Database["public"]["Enums"]["discipline"][]
+          full_name?: string
+          id?: string
+          photo_url?: string | null
+          rank?: string | null
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          years_experience?: number
+        }
+        Relationships: []
+      }
+      competitions: {
+        Row: {
+          approved: boolean
+          city: string | null
+          country: string
+          created_at: string
+          description: string | null
+          discipline: Database["public"]["Enums"]["discipline"]
+          end_date: string | null
+          id: string
+          organizer: string | null
+          scope: Database["public"]["Enums"]["competition_scope"]
+          source: string
+          start_date: string
+          title: string
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          approved?: boolean
+          city?: string | null
+          country?: string
+          created_at?: string
+          description?: string | null
+          discipline: Database["public"]["Enums"]["discipline"]
+          end_date?: string | null
+          id?: string
+          organizer?: string | null
+          scope: Database["public"]["Enums"]["competition_scope"]
+          source?: string
+          start_date: string
+          title: string
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          approved?: boolean
+          city?: string | null
+          country?: string
+          created_at?: string
+          description?: string | null
+          discipline?: Database["public"]["Enums"]["discipline"]
+          end_date?: string | null
+          id?: string
+          organizer?: string | null
+          scope?: Database["public"]["Enums"]["competition_scope"]
+          source?: string
+          start_date?: string
+          title?: string
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
+      media_items: {
+        Row: {
+          age_group: Database["public"]["Enums"]["age_group"] | null
+          created_at: string
+          description: string | null
+          discipline: Database["public"]["Enums"]["discipline"] | null
+          id: string
+          kind: Database["public"]["Enums"]["media_kind"]
+          public_url: string
+          session_date: string
+          storage_path: string
+          title: string | null
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          age_group?: Database["public"]["Enums"]["age_group"] | null
+          created_at?: string
+          description?: string | null
+          discipline?: Database["public"]["Enums"]["discipline"] | null
+          id?: string
+          kind: Database["public"]["Enums"]["media_kind"]
+          public_url: string
+          session_date?: string
+          storage_path: string
+          title?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          age_group?: Database["public"]["Enums"]["age_group"] | null
+          created_at?: string
+          description?: string | null
+          discipline?: Database["public"]["Enums"]["discipline"] | null
+          id?: string
+          kind?: Database["public"]["Enums"]["media_kind"]
+          public_url?: string
+          session_date?: string
+          storage_path?: string
+          title?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: []
+      }
+      membership_plans: {
+        Row: {
+          active: boolean
+          age_group: Database["public"]["Enums"]["age_group"]
+          created_at: string
+          description: string | null
+          discipline: Database["public"]["Enums"]["discipline"]
+          duration_days: number
+          id: string
+          name: string
+          price_lei: number
+          sessions_per_week: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          age_group: Database["public"]["Enums"]["age_group"]
+          created_at?: string
+          description?: string | null
+          discipline: Database["public"]["Enums"]["discipline"]
+          duration_days?: number
+          id?: string
+          name: string
+          price_lei: number
+          sessions_per_week?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          age_group?: Database["public"]["Enums"]["age_group"]
+          created_at?: string
+          description?: string | null
+          discipline?: Database["public"]["Enums"]["discipline"]
+          duration_days?: number
+          id?: string
+          name?: string
+          price_lei?: number
+          sessions_per_week?: number
           updated_at?: string
         }
         Relationships: []
+      }
+      memberships: {
+        Row: {
+          age_group: Database["public"]["Enums"]["age_group"]
+          athlete_name: string | null
+          created_at: string
+          discipline: Database["public"]["Enums"]["discipline"]
+          end_date: string
+          id: string
+          notes: string | null
+          plan_id: string | null
+          start_date: string
+          status: Database["public"]["Enums"]["membership_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          age_group: Database["public"]["Enums"]["age_group"]
+          athlete_name?: string | null
+          created_at?: string
+          discipline: Database["public"]["Enums"]["discipline"]
+          end_date: string
+          id?: string
+          notes?: string | null
+          plan_id?: string | null
+          start_date?: string
+          status?: Database["public"]["Enums"]["membership_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          age_group?: Database["public"]["Enums"]["age_group"]
+          athlete_name?: string | null
+          created_at?: string
+          discipline?: Database["public"]["Enums"]["discipline"]
+          end_date?: string
+          id?: string
+          notes?: string | null
+          plan_id?: string | null
+          start_date?: string
+          status?: Database["public"]["Enums"]["membership_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memberships_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "membership_plans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -116,81 +327,47 @@ export type Database = {
         }
         Relationships: []
       }
-      rides: {
+      user_roles: {
         Row: {
-          bike_id: string
-          cost_lei: number
           created_at: string
-          destination_lat: number | null
-          destination_lng: number | null
-          distance_km: number
-          end_lat: number | null
-          end_lng: number | null
-          ended_at: string | null
           id: string
-          start_lat: number
-          start_lng: number
-          started_at: string
-          status: Database["public"]["Enums"]["ride_status"]
-          updated_at: string
+          role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Insert: {
-          bike_id: string
-          cost_lei?: number
           created_at?: string
-          destination_lat?: number | null
-          destination_lng?: number | null
-          distance_km?: number
-          end_lat?: number | null
-          end_lng?: number | null
-          ended_at?: string | null
           id?: string
-          start_lat: number
-          start_lng: number
-          started_at?: string
-          status?: Database["public"]["Enums"]["ride_status"]
-          updated_at?: string
+          role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Update: {
-          bike_id?: string
-          cost_lei?: number
           created_at?: string
-          destination_lat?: number | null
-          destination_lng?: number | null
-          distance_km?: number
-          end_lat?: number | null
-          end_lng?: number | null
-          ended_at?: string | null
           id?: string
-          start_lat?: number
-          start_lng?: number
-          started_at?: string
-          status?: Database["public"]["Enums"]["ride_status"]
-          updated_at?: string
+          role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "rides_bike_id_fkey"
-            columns: ["bike_id"]
-            isOneToOne: false
-            referencedRelation: "bikes"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      bike_status: "available" | "rented" | "maintenance" | "reserved"
-      ride_status: "active" | "paused" | "completed" | "cancelled"
+      age_group: "kids" | "adults"
+      app_role: "admin" | "member"
+      competition_scope: "national" | "europe"
+      discipline: "bjj" | "mma"
+      media_kind: "photo" | "video"
+      membership_status: "active" | "expired" | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -318,8 +495,12 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      bike_status: ["available", "rented", "maintenance", "reserved"],
-      ride_status: ["active", "paused", "completed", "cancelled"],
+      age_group: ["kids", "adults"],
+      app_role: ["admin", "member"],
+      competition_scope: ["national", "europe"],
+      discipline: ["bjj", "mma"],
+      media_kind: ["photo", "video"],
+      membership_status: ["active", "expired", "cancelled"],
     },
   },
 } as const

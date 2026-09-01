@@ -1,32 +1,46 @@
-import { Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { Menu, X, Phone, ShieldCheck } from "lucide-react";
-import { SITE } from "@/data/site";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Menu, X, Swords, LogOut, UserRound } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { CLUB } from "@/data/club";
 
 const NAV = [
   { to: "/", label: "Acasă" },
-  { to: "/servicii", label: "Servicii" },
-  { to: "/preturi", label: "Prețuri" },
-  { to: "/echipa", label: "Echipă" },
+  { to: "/program", label: "Program" },
+  { to: "/antrenori", label: "Antrenori" },
+  { to: "/abonamente", label: "Abonamente" },
+  { to: "/competitii", label: "Competiții" },
   { to: "/galerie", label: "Galerie" },
-  { to: "/informatii", label: "Informații ITP" },
-  { to: "/contact", label: "Contact" },
 ] as const;
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSignedIn(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => setSignedIn(!!session));
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    setOpen(false);
+    navigate({ to: "/" });
+  };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2" onClick={() => setOpen(false)}>
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <ShieldCheck className="h-5 w-5" />
+          <span className="flex h-9 w-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
+            <Swords className="h-5 w-5" />
           </span>
           <span className="flex flex-col leading-none">
-            <span className="text-lg font-extrabold tracking-tight">{SITE.name}</span>
-            <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              Stație ITP
+            <span className="font-display text-2xl tracking-wide">{CLUB.name}</span>
+            <span className="text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+              {CLUB.tagline}
             </span>
           </span>
         </Link>
@@ -37,8 +51,8 @@ export function Header() {
               key={item.to}
               to={item.to}
               activeOptions={{ exact: item.to === "/" }}
-              activeProps={{ className: "bg-muted text-foreground" }}
-              className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              activeProps={{ className: "text-foreground" }}
+              className="rounded-md px-3 py-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground transition-colors hover:text-foreground"
             >
               {item.label}
             </Link>
@@ -46,22 +60,34 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <a
-            href={`tel:${SITE.phone.replace(/\s/g, "")}`}
-            className="hidden items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-foreground sm:flex"
-          >
-            <Phone className="h-4 w-4 text-primary" />
-            {SITE.phone}
-          </a>
-          <Link
-            to="/programare"
-            className="hidden rounded-md bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground shadow-sm transition-transform hover:scale-[1.03] sm:inline-flex"
-          >
-            Programare
-          </Link>
+          {signedIn ? (
+            <>
+              <Link
+                to="/cont"
+                className="hidden items-center gap-2 rounded-md border border-border px-3 py-2 text-sm font-semibold sm:inline-flex"
+              >
+                <UserRound className="h-4 w-4 text-primary" />
+                Contul meu
+              </Link>
+              <button
+                onClick={signOut}
+                className="hidden rounded-md p-2 text-muted-foreground hover:text-foreground sm:block"
+                aria-label="Deconectare"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/auth"
+              className="hidden rounded-md bg-primary px-4 py-2 text-sm font-bold uppercase tracking-wide text-primary-foreground sm:inline-flex"
+            >
+              Cont / Înscriere
+            </Link>
+          )}
           <button
             type="button"
-            className="rounded-md p-2 text-foreground lg:hidden"
+            className="rounded-md p-2 lg:hidden"
             aria-label="Meniu"
             onClick={() => setOpen((v) => !v)}
           >
@@ -78,18 +104,29 @@ export function Header() {
                 key={item.to}
                 to={item.to}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted"
+                className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted"
               >
                 {item.label}
               </Link>
             ))}
-            <Link
-              to="/programare"
-              onClick={() => setOpen(false)}
-              className="mt-2 rounded-md bg-accent px-3 py-2.5 text-center text-sm font-semibold text-accent-foreground"
-            >
-              Fă o programare
-            </Link>
+            {signedIn ? (
+              <>
+                <Link to="/cont" onClick={() => setOpen(false)} className="rounded-md px-3 py-2.5 text-sm font-semibold hover:bg-muted">
+                  Contul meu
+                </Link>
+                <button onClick={signOut} className="rounded-md px-3 py-2.5 text-left text-sm font-semibold text-muted-foreground">
+                  Deconectare
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/auth"
+                onClick={() => setOpen(false)}
+                className="mt-2 rounded-md bg-primary px-3 py-2.5 text-center text-sm font-bold uppercase text-primary-foreground"
+              >
+                Cont / Înscriere
+              </Link>
+            )}
           </div>
         </nav>
       )}

@@ -10,128 +10,33 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as EchipaRouteImport } from './routes/echipa'
-import { Route as GalerieRouteImport } from './routes/galerie'
-import { Route as InformatiiRouteImport } from './routes/informatii'
-import { Route as PreturiRouteImport } from './routes/preturi'
-import { Route as ProgramareRouteImport } from './routes/programare'
-import { Route as ServiciiRouteImport } from './routes/servicii'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EchipaRoute = EchipaRouteImport.update({
-  id: '/echipa',
-  path: '/echipa',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GalerieRoute = GalerieRouteImport.update({
-  id: '/galerie',
-  path: '/galerie',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InformatiiRoute = InformatiiRouteImport.update({
-  id: '/informatii',
-  path: '/informatii',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PreturiRoute = PreturiRouteImport.update({
-  id: '/preturi',
-  path: '/preturi',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProgramareRoute = ProgramareRouteImport.update({
-  id: '/programare',
-  path: '/programare',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ServiciiRoute = ServiciiRouteImport.update({
-  id: '/servicii',
-  path: '/servicii',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/contact': typeof ContactRoute
-  '/echipa': typeof EchipaRoute
-  '/galerie': typeof GalerieRoute
-  '/informatii': typeof InformatiiRoute
-  '/preturi': typeof PreturiRoute
-  '/programare': typeof ProgramareRoute
-  '/servicii': typeof ServiciiRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/contact': typeof ContactRoute
-  '/echipa': typeof EchipaRoute
-  '/galerie': typeof GalerieRoute
-  '/informatii': typeof InformatiiRoute
-  '/preturi': typeof PreturiRoute
-  '/programare': typeof ProgramareRoute
-  '/servicii': typeof ServiciiRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/contact': typeof ContactRoute
-  '/echipa': typeof EchipaRoute
-  '/galerie': typeof GalerieRoute
-  '/informatii': typeof InformatiiRoute
-  '/preturi': typeof PreturiRoute
-  '/programare': typeof ProgramareRoute
-  '/servicii': typeof ServiciiRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/contact'
-    | '/echipa'
-    | '/galerie'
-    | '/informatii'
-    | '/preturi'
-    | '/programare'
-    | '/servicii'
+  fullPaths: '/'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/contact'
-    | '/echipa'
-    | '/galerie'
-    | '/informatii'
-    | '/preturi'
-    | '/programare'
-    | '/servicii'
-  id:
-    | '__root__'
-    | '/'
-    | '/contact'
-    | '/echipa'
-    | '/galerie'
-    | '/informatii'
-    | '/preturi'
-    | '/programare'
-    | '/servicii'
+  to: '/'
+  id: '__root__' | '/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ContactRoute: typeof ContactRoute
-  EchipaRoute: typeof EchipaRoute
-  GalerieRoute: typeof GalerieRoute
-  InformatiiRoute: typeof InformatiiRoute
-  PreturiRoute: typeof PreturiRoute
-  ProgramareRoute: typeof ProgramareRoute
-  ServiciiRoute: typeof ServiciiRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -143,67 +48,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/echipa': {
-      id: '/echipa'
-      path: '/echipa'
-      fullPath: '/echipa'
-      preLoaderRoute: typeof EchipaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/galerie': {
-      id: '/galerie'
-      path: '/galerie'
-      fullPath: '/galerie'
-      preLoaderRoute: typeof GalerieRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/informatii': {
-      id: '/informatii'
-      path: '/informatii'
-      fullPath: '/informatii'
-      preLoaderRoute: typeof InformatiiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/preturi': {
-      id: '/preturi'
-      path: '/preturi'
-      fullPath: '/preturi'
-      preLoaderRoute: typeof PreturiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/programare': {
-      id: '/programare'
-      path: '/programare'
-      fullPath: '/programare'
-      preLoaderRoute: typeof ProgramareRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/servicii': {
-      id: '/servicii'
-      path: '/servicii'
-      fullPath: '/servicii'
-      preLoaderRoute: typeof ServiciiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ContactRoute: ContactRoute,
-  EchipaRoute: EchipaRoute,
-  GalerieRoute: GalerieRoute,
-  InformatiiRoute: InformatiiRoute,
-  PreturiRoute: PreturiRoute,
-  ProgramareRoute: ProgramareRoute,
-  ServiciiRoute: ServiciiRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

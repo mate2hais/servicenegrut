@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AbonamenteRouteImport } from './routes/abonamente'
 import { Route as AntrenoriRouteImport } from './routes/antrenori'
+import { Route as CompetitiiRouteImport } from './routes/competitii'
 import { Route as ProgramRouteImport } from './routes/program'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +30,11 @@ const AntrenoriRoute = AntrenoriRouteImport.update({
   path: '/antrenori',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CompetitiiRoute = CompetitiiRouteImport.update({
+  id: '/competitii',
+  path: '/competitii',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProgramRoute = ProgramRouteImport.update({
   id: '/program',
   path: '/program',
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/abonamente': typeof AbonamenteRoute
   '/antrenori': typeof AntrenoriRoute
+  '/competitii': typeof CompetitiiRoute
   '/program': typeof ProgramRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/abonamente': typeof AbonamenteRoute
   '/antrenori': typeof AntrenoriRoute
+  '/competitii': typeof CompetitiiRoute
   '/program': typeof ProgramRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,23 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/abonamente': typeof AbonamenteRoute
   '/antrenori': typeof AntrenoriRoute
+  '/competitii': typeof CompetitiiRoute
   '/program': typeof ProgramRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/abonamente' | '/antrenori' | '/program'
+  fullPaths: '/' | '/abonamente' | '/antrenori' | '/competitii' | '/program'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/abonamente' | '/antrenori' | '/program'
-  id: '__root__' | '/' | '/abonamente' | '/antrenori' | '/program'
+  to: '/' | '/abonamente' | '/antrenori' | '/competitii' | '/program'
+  id:
+    '__root__' | '/' | '/abonamente' | '/antrenori' | '/competitii' | '/program'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AbonamenteRoute: typeof AbonamenteRoute
   AntrenoriRoute: typeof AntrenoriRoute
+  CompetitiiRoute: typeof CompetitiiRoute
   ProgramRoute: typeof ProgramRoute
 }
 
@@ -92,6 +103,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AntrenoriRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/competitii': {
+      id: '/competitii'
+      path: '/competitii'
+      fullPath: '/competitii'
+      preLoaderRoute: typeof CompetitiiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/program': {
       id: '/program'
       path: '/program'
@@ -106,6 +124,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AbonamenteRoute: AbonamenteRoute,
   AntrenoriRoute: AntrenoriRoute,
+  CompetitiiRoute: CompetitiiRoute,
   ProgramRoute: ProgramRoute,
 }
 export const routeTree = rootRouteImport

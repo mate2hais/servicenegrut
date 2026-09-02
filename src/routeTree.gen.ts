@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AbonamenteRouteImport } from './routes/abonamente'
 import { Route as AntrenoriRouteImport } from './routes/antrenori'
 import { Route as ProgramRouteImport } from './routes/program'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AbonamenteRoute = AbonamenteRouteImport.update({
+  id: '/abonamente',
+  path: '/abonamente',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AntrenoriRoute = AntrenoriRouteImport.update({
@@ -31,30 +37,34 @@ const ProgramRoute = ProgramRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/abonamente': typeof AbonamenteRoute
   '/antrenori': typeof AntrenoriRoute
   '/program': typeof ProgramRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/abonamente': typeof AbonamenteRoute
   '/antrenori': typeof AntrenoriRoute
   '/program': typeof ProgramRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/abonamente': typeof AbonamenteRoute
   '/antrenori': typeof AntrenoriRoute
   '/program': typeof ProgramRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/antrenori' | '/program'
+  fullPaths: '/' | '/abonamente' | '/antrenori' | '/program'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/antrenori' | '/program'
-  id: '__root__' | '/' | '/antrenori' | '/program'
+  to: '/' | '/abonamente' | '/antrenori' | '/program'
+  id: '__root__' | '/' | '/abonamente' | '/antrenori' | '/program'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AbonamenteRoute: typeof AbonamenteRoute
   AntrenoriRoute: typeof AntrenoriRoute
   ProgramRoute: typeof ProgramRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/abonamente': {
+      id: '/abonamente'
+      path: '/abonamente'
+      fullPath: '/abonamente'
+      preLoaderRoute: typeof AbonamenteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/antrenori': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AbonamenteRoute: AbonamenteRoute,
   AntrenoriRoute: AntrenoriRoute,
   ProgramRoute: ProgramRoute,
 }

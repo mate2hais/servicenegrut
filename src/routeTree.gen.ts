@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AbonamenteRouteImport } from './routes/abonamente'
 import { Route as AntrenoriRouteImport } from './routes/antrenori'
 import { Route as CompetitiiRouteImport } from './routes/competitii'
+import { Route as GalerieRouteImport } from './routes/galerie'
 import { Route as ProgramRouteImport } from './routes/program'
 
 const IndexRoute = IndexRouteImport.update({
@@ -35,6 +36,11 @@ const CompetitiiRoute = CompetitiiRouteImport.update({
   path: '/competitii',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GalerieRoute = GalerieRouteImport.update({
+  id: '/galerie',
+  path: '/galerie',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProgramRoute = ProgramRouteImport.update({
   id: '/program',
   path: '/program',
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/abonamente': typeof AbonamenteRoute
   '/antrenori': typeof AntrenoriRoute
   '/competitii': typeof CompetitiiRoute
+  '/galerie': typeof GalerieRoute
   '/program': typeof ProgramRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/abonamente': typeof AbonamenteRoute
   '/antrenori': typeof AntrenoriRoute
   '/competitii': typeof CompetitiiRoute
+  '/galerie': typeof GalerieRoute
   '/program': typeof ProgramRoute
 }
 export interface FileRoutesById {
@@ -61,15 +69,24 @@ export interface FileRoutesById {
   '/abonamente': typeof AbonamenteRoute
   '/antrenori': typeof AntrenoriRoute
   '/competitii': typeof CompetitiiRoute
+  '/galerie': typeof GalerieRoute
   '/program': typeof ProgramRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/abonamente' | '/antrenori' | '/competitii' | '/program'
+  fullPaths:
+    '/' | '/abonamente' | '/antrenori' | '/competitii' | '/galerie' | '/program'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/abonamente' | '/antrenori' | '/competitii' | '/program'
+  to:
+    '/' | '/abonamente' | '/antrenori' | '/competitii' | '/galerie' | '/program'
   id:
-    '__root__' | '/' | '/abonamente' | '/antrenori' | '/competitii' | '/program'
+    | '__root__'
+    | '/'
+    | '/abonamente'
+    | '/antrenori'
+    | '/competitii'
+    | '/galerie'
+    | '/program'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +94,7 @@ export interface RootRouteChildren {
   AbonamenteRoute: typeof AbonamenteRoute
   AntrenoriRoute: typeof AntrenoriRoute
   CompetitiiRoute: typeof CompetitiiRoute
+  GalerieRoute: typeof GalerieRoute
   ProgramRoute: typeof ProgramRoute
 }
 
@@ -110,6 +128,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompetitiiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/galerie': {
+      id: '/galerie'
+      path: '/galerie'
+      fullPath: '/galerie'
+      preLoaderRoute: typeof GalerieRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/program': {
       id: '/program'
       path: '/program'
@@ -125,6 +150,7 @@ const rootRouteChildren: RootRouteChildren = {
   AbonamenteRoute: AbonamenteRoute,
   AntrenoriRoute: AntrenoriRoute,
   CompetitiiRoute: CompetitiiRoute,
+  GalerieRoute: GalerieRoute,
   ProgramRoute: ProgramRoute,
 }
 export const routeTree = rootRouteImport

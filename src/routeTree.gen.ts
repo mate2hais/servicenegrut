@@ -10,33 +10,135 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AbonamenteRouteImport } from './routes/abonamente'
+import { Route as AntrenoriRouteImport } from './routes/antrenori'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CompetitiiRouteImport } from './routes/competitii'
+import { Route as GalerieRouteImport } from './routes/galerie'
+import { Route as ProgramRouteImport } from './routes/program'
+import { Route as AuthenticatedContRouteImport } from './routes/_authenticated/cont'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AbonamenteRoute = AbonamenteRouteImport.update({
+  id: '/abonamente',
+  path: '/abonamente',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AntrenoriRoute = AntrenoriRouteImport.update({
+  id: '/antrenori',
+  path: '/antrenori',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompetitiiRoute = CompetitiiRouteImport.update({
+  id: '/competitii',
+  path: '/competitii',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalerieRoute = GalerieRouteImport.update({
+  id: '/galerie',
+  path: '/galerie',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgramRoute = ProgramRouteImport.update({
+  id: '/program',
+  path: '/program',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedContRoute = AuthenticatedContRouteImport.update({
+  id: '/cont',
+  path: '/cont',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/abonamente': typeof AbonamenteRoute
+  '/antrenori': typeof AntrenoriRoute
+  '/auth': typeof AuthRoute
+  '/competitii': typeof CompetitiiRoute
+  '/galerie': typeof GalerieRoute
+  '/program': typeof ProgramRoute
+  '/cont': typeof AuthenticatedContRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/abonamente': typeof AbonamenteRoute
+  '/antrenori': typeof AntrenoriRoute
+  '/auth': typeof AuthRoute
+  '/competitii': typeof CompetitiiRoute
+  '/galerie': typeof GalerieRoute
+  '/program': typeof ProgramRoute
+  '/cont': typeof AuthenticatedContRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/abonamente': typeof AbonamenteRoute
+  '/antrenori': typeof AntrenoriRoute
+  '/auth': typeof AuthRoute
+  '/competitii': typeof CompetitiiRoute
+  '/galerie': typeof GalerieRoute
+  '/program': typeof ProgramRoute
+  '/_authenticated/cont': typeof AuthenticatedContRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/abonamente'
+    | '/antrenori'
+    | '/auth'
+    | '/competitii'
+    | '/galerie'
+    | '/program'
+    | '/cont'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/abonamente'
+    | '/antrenori'
+    | '/auth'
+    | '/competitii'
+    | '/galerie'
+    | '/program'
+    | '/cont'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/abonamente'
+    | '/antrenori'
+    | '/auth'
+    | '/competitii'
+    | '/galerie'
+    | '/program'
+    | '/_authenticated/cont'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AbonamenteRoute: typeof AbonamenteRoute
+  AntrenoriRoute: typeof AntrenoriRoute
+  AuthRoute: typeof AuthRoute
+  CompetitiiRoute: typeof CompetitiiRoute
+  GalerieRoute: typeof GalerieRoute
+  ProgramRoute: typeof ProgramRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +150,85 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/abonamente': {
+      id: '/abonamente'
+      path: '/abonamente'
+      fullPath: '/abonamente'
+      preLoaderRoute: typeof AbonamenteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/antrenori': {
+      id: '/antrenori'
+      path: '/antrenori'
+      fullPath: '/antrenori'
+      preLoaderRoute: typeof AntrenoriRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/competitii': {
+      id: '/competitii'
+      path: '/competitii'
+      fullPath: '/competitii'
+      preLoaderRoute: typeof CompetitiiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/galerie': {
+      id: '/galerie'
+      path: '/galerie'
+      fullPath: '/galerie'
+      preLoaderRoute: typeof GalerieRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/program': {
+      id: '/program'
+      path: '/program'
+      fullPath: '/program'
+      preLoaderRoute: typeof ProgramRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/cont': {
+      id: '/_authenticated/cont'
+      path: '/cont'
+      fullPath: '/cont'
+      preLoaderRoute: typeof AuthenticatedContRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedContRoute: typeof AuthenticatedContRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedContRoute: AuthenticatedContRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AbonamenteRoute: AbonamenteRoute,
+  AntrenoriRoute: AntrenoriRoute,
+  AuthRoute: AuthRoute,
+  CompetitiiRoute: CompetitiiRoute,
+  GalerieRoute: GalerieRoute,
+  ProgramRoute: ProgramRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

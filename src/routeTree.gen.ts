@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AntrenoriRouteImport } from './routes/antrenori'
 import { Route as ProgramRouteImport } from './routes/program'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AntrenoriRoute = AntrenoriRouteImport.update({
+  id: '/antrenori',
+  path: '/antrenori',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProgramRoute = ProgramRouteImport.update({
@@ -25,27 +31,31 @@ const ProgramRoute = ProgramRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/antrenori': typeof AntrenoriRoute
   '/program': typeof ProgramRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/antrenori': typeof AntrenoriRoute
   '/program': typeof ProgramRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/antrenori': typeof AntrenoriRoute
   '/program': typeof ProgramRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/program'
+  fullPaths: '/' | '/antrenori' | '/program'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/program'
-  id: '__root__' | '/' | '/program'
+  to: '/' | '/antrenori' | '/program'
+  id: '__root__' | '/' | '/antrenori' | '/program'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AntrenoriRoute: typeof AntrenoriRoute
   ProgramRoute: typeof ProgramRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/antrenori': {
+      id: '/antrenori'
+      path: '/antrenori'
+      fullPath: '/antrenori'
+      preLoaderRoute: typeof AntrenoriRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/program': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AntrenoriRoute: AntrenoriRoute,
   ProgramRoute: ProgramRoute,
 }
 export const routeTree = rootRouteImport
